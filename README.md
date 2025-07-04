@@ -9,50 +9,49 @@ YOYOTIX 是一個基於 Django 打造的線上活動購票平台，整合會員�
 yoyotix/
 ├── manage.py
 ├── db.sqlite3
+├── supportdb.sql 			# 客服留言資料庫
 │
 ├── yoyotix/                # 專案主設定
-│   ├── settings.py
-│   ├── urls.py
+│   ├── settings.py         # 資料庫路由
+│   ├── urls.py             # 網頁路徑
 │   └── ...
 │
 ├── accounts/               # App 1：會員系統
 │   ├── models.py           # 自訂 CustomUser 模型
 │   ├── views.py
 │   ├── forms.py            # 註冊、自訂欄位驗證
-│   ├── urls.py
-│   └── templates/accounts/
-│       ├── login.html
-│       ├── register.html
-│       └── profile.html
+│   └── urls.py
 │
 ├── tickets/                # App 2：活動票券系統
 │   ├── models.py           # Event、Ticket、Order
 │   ├── views.py
 │   ├── forms.py
-│   ├── urls.py
-│   └── templates/tickets/
-│       ├── index.html
-│       ├── event\_detail.html
-│       └── order\_success.html
+│   └── urls.py
 │
 ├── support/                # App 3：客服中心
 │   ├── models.py           # Message 模型
 │   ├── forms.py
 │   ├── views.py
-│   ├── urls.py
-│   └── templates/support/
-│       ├── contact\_form.html
-│       ├── message\_list.html
-│       └── message\_detail.html
+│   └── urls.py
 │
 ├── templates/
-│   ├── base.html           # 共用母模板
-│   └── includes/
-│       ├── head.html
-│       └── footer.html
+│	├── accounts/ 			# 登入 註冊 個人資料
+│	├── support/ 			# 客服留言 常見問題
+│	├── tickets/ 			# 票務相關頁面
+│	├── includes/
+│	│	├── footer.html
+│	│	└── header.html
+│	├── base.html 			# 所有頁面共用母模板
+│	└── index.html 			# 首頁
 │
-├── static/
-│   └── css/style.css       # 前端樣式
+├── media/ 					# 媒體資源 演出圖片資料夾(from admin)
+│	└── events/
+│	├── #　主視覺
+│	└── seating_maps/　		# 座位圖
+└── static/
+   	├── css/style.css       # 前端樣式
+   	├── image/
+	└── js/
 
 ````
 
