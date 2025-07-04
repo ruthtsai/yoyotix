@@ -1,0 +1,116 @@
+<!-- tickets/events.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<style>
+  .hero-banner {
+    background-image: url("{% static 'image/banner.jpg' %}"); 
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 100px 20px;
+    text-align: center;
+    border-radius: 12px;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .hero-banner::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4); /* 漸層遮罩 */
+    border-radius: 12px;
+  }
+
+  .hero-banner h2 {
+    position: relative;
+    z-index: 1;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  .card-hover-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .card:hover .card-hover-box {
+    opacity: 1;
+  }
+
+  .card-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-img {
+    max-height: 500px;
+    object-fit: cover;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- 活動卡片區塊 -->
+<div class="container mt-4">
+  <!-- Hero 橫幅 -->
+  <div class="hero-banner">
+    <h2 class="mb-0  text-white" >探索活動發掘精彩從此開始！</h2>
+  </div>
+
+  <!-- 搜尋表單 -->
+  <form method="get" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="q" class="form-control" placeholder="輸入關鍵字搜尋活動..." value="{{ request.GET.q }}">
+      <button class="btn btn-outline-secondary" type="submit">搜尋</button>
+    </div>
+  </form>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for event in events %}
+      <div class="col">
+        <div class="card h-100 shadow-sm card-wrapper">
+          <img src="{{ event.main_image.url }}" class="card-img-top" alt="{{ event.title }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ event.title }}</h5>
+            <p class="card-text">
+              <small class="text-muted">{{ event.event_date|date:"Y-m-d H:i" }}</small>
+            </p>
+            <div align="center">
+              <a href="{% url 'event_detail' event.id %}" class="btn btn-primary">前往活動頁面</a>
+            </div>
+          </div>
+          <div class="card-hover-box">
+            {{ event.description|truncatechars:100 }}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col">
+        <p>目前沒有活動。</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<br>
+{% endblock %}

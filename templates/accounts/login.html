@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}登入 - YOYOTIX{% endblock %}
+
+{% block meta %}
+<style>
+  html, body {
+    height: 100%;
+  }
+
+  .form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+  }
+
+  .form-signin .checkbox {
+    font-weight: 400;
+  }
+</style>
+<link href="{% static 'css/signin.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <main class="form-signin">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <h1 class="h3 mb-3 fw-normal">使用 YOYOTIX帳號登入</h1>
+      <hr>
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li class="alert alert-{{ message.tags }}" role="alert">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- 帳號 / Email -->
+      <div class="mb-3">
+        <label for="account" class="form-label">帳號或 Email</label>
+        <input type="text" name="account" id="account"
+               class="form-control {% if form.account.errors %}is-invalid{% endif %}"
+               placeholder="請輸入帳號或 Email"
+               value="{{ form.account.value|default_if_none:'' }}">
+        {% if form.account.errors %}
+          <div class="invalid-feedback">{{ form.account.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- 密碼 -->
+      <div class="mb-3">
+        <label for="password" class="form-label">密碼</label>
+        <input type="password" name="password" id="password"
+               class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+               placeholder="請輸入密碼">
+        {% if form.password.errors %}
+          <div class="invalid-feedback">{{ form.password.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Remember me -->
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" name="remember" id="remember"
+               value="1" {% if request.POST.remember %}checked{% endif %}>
+        <label class="form-check-label" for="remember">
+          記住我
+        </label>
+      </div>
+
+      <button class="w-100 btn btn-lg btn-primary" type="submit">登入</button>
+      <!-- 忘記密碼按鈕（彈出提示用） -->
+      <button type="button" class="btn btn-lg btn-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+        忘記密碼？
+      </button>
+
+      <!-- Modal 彈出視窗 -->
+      <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header text-white">
+              <h5 class="modal-title" id="forgotPasswordModalLabel">忘記密碼處理方式</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+            </div>
+            <div class="modal-body">
+              請透過電子郵件聯絡客服信箱 <strong>94ruthtsai@gmail.com</strong><br>
+              並附上您的帳號、姓名與註冊手機，<br>
+              經身份驗證後，客服人員將協助您重設密碼。
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">我知道了</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-3">還沒有帳號？<a href="{% url 'register' %}">立即註冊</a></p>
+    </form>
+  </main>
+</div>
+{% endblock %}

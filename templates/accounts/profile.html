@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}個人資料 - YOYOTIX{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+  <h2>個人資料</h2>
+  <hr>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <h4>修改暱稱、生日與電話</h4>
+    {{ profile_form.as_p }}
+    <button type="submit" name="update_profile" class="btn btn-primary">更新個人資料</button>
+  </form>
+
+
+  <form method="post">
+    {% csrf_token %}
+    <h4 class='mt-4'>變更密碼</h4>
+    {{ password_form.as_p }}
+    <button type="submit" name="change_password" class="btn btn-warning">更新密碼</button>
+    <hr>
+  </form>
+</div>
+
+
+<!-- 刪除帳號按鈕（觸發 Modal） -->
+<div class="text-center">
+  <button type="button" class="btn" style="background-color: #af7838; color: white;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+    刪除帳號
+  </button>
+</div>
+
+<!-- 確認刪除帳號 Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'delete_account' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteAccountModalLabel">確認永久刪除帳號？</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+        </div>
+        <div class="modal-body">
+          此操作無法復原，確定要永久刪除您的帳號嗎？
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="submit" class="btn" style="background-color: #af7838; color: white;">確認刪除</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<br>
+{% endblock %}

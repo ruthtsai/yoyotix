@@ -1,0 +1,144 @@
+:root {
+  --main-color: #64c025;
+  --text-color: #000000;
+  --background-color: #ffffff;
+  --secondary-color: #f5f5f5;
+  --hover-color: #4e9d1e;
+}
+
+/* 全站通用設定 */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* 標題顏色 */
+h3, h4, h5, h6 {
+  color: var(--main-color);
+}
+
+h1, h2{
+  color: var(--text-color);
+}
+
+/* 連結樣式 */
+a {
+  color: var(--main-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--hover-color);
+  text-decoration: underline;
+}
+
+/* 按鈕樣式 */
+.btn, button {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover, button:hover {
+  background-color: var(--hover-color);
+  color: white;
+}
+
+/* 覆寫 Bootstrap primary button */
+.btn-primary {
+  background-color: var(--main-color) !important;
+  border-color: var(--main-color) !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--hover-color) !important;
+  border-color: var(--hover-color) !important;
+}
+
+/* 表單欄位 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--main-color);
+  outline: none;
+}
+
+/* 導覽列與下拉選單 */
+.navbar {
+  background-color: var(--main-color);
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .dropdown-toggle {
+  color: white !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white !important;
+}
+
+.dropdown-menu {
+  background-color: white !important;
+  border: 1px solid #ccc !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.dropdown-item {
+  color: #000 !important;
+}
+
+.dropdown-item:hover {
+  background-color: var(--hover-color) !important;
+  color: white !important;
+}
+
+.navbar-toggler {
+  border-color: white;
+}
+
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+
+
+/* 區塊背景 */
+.section, .card {
+  background-color: var(--secondary-color);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Footer */
+footer {
+  background-color: #666666;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+/* 平滑滾動 */
+html {
+    scroll-behavior: smooth;
+}

@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<style>
+  
+  body {
+    background-color: #f5f5f5; /* 灰色背景 */
+  }
+
+  /* 固定 navbar */
+  .event-navbar {
+    position: sticky;
+    top: 0px;
+    background-color: #626262; /* 黑底 */
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    border-bottom: 3px solid #28a745; /* 主題綠底線 */
+  }
+
+  .event-navbar a {
+    color: #fff; /* 白字 */
+    padding: 12px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .event-navbar a.active,
+  .event-navbar a:hover {
+    color: #28a745; /* 主題綠 */
+  }
+
+  /* 內容區塊間距 */
+  section {
+    padding: 60px 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* 購票按鈕 */
+  .btn-register {
+    display: inline-block;
+    margin-top: 30px;
+  }
+
+.text-danger {
+    color: #dc3545; /* Bootstrap 紅色 */
+    margin-left: 8px;
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-4">
+  <h2>{{ event.title }}</h2>
+  <p><strong>活動日期：</strong> {{ event.event_date|date:"Y-m-d H:i" }}</p>
+
+  {% if event.main_image %}
+  <div align="center">
+  <img src="{{ event.main_image.url }}" class="img-fluid mb-3" alt="{{ event.title }}">
+  </div>
+  {% endif %}
+</div>
+
+<!-- navbar -->
+<nav class="event-navbar">
+  <a href="#intro" class="nav-link active">簡介</a>
+  <a href="#program" class="nav-link">節目資訊</a>
+  <a href="#seating" class="nav-link">座位圖</a>
+  <a href="#notice" class="nav-link">注意事項</a>
+  <a href="#register" class="nav-link">購票</a>
+</nav>
+
+<!-- 各區塊內容 -->
+<div class="container">
+  <section id="intro">
+    <h3>簡介</h3>
+    <p>{{ event.description|linebreaks }}</p>
+  </section>
+
+  <section id="program">
+    <h3>節目資訊</h3>
+    <ul>
+      <li><strong>地點：</strong>{{ event.location }}</li>
+      <li><strong>主辦：</strong>{{ event.organizer }}</li>
+      <!-- 可以根據你的 model 補充更多資訊 -->
+    </ul>
+  </section>
+
+  <section id="seating">
+    <h3>座位圖</h3>
+    {% if event.seating_map %}
+      <img src="{{ event.seating_map.url }}" class="img-fluid" alt="座位圖">
+    {% else %}
+      <p>尚無座位圖資料。</p>
+    {% endif %}
+  </section>
+
+  <section id="notice">
+    <h3>注意事項</h3>
+    <h5>退換票機制</h5>
+
+    <p>根據文化部訂定『藝文表演票券定型化契約應記載及不得記載事項』第六項「退、換票機制」之規定共有四種方案之退換票規定，本節目採用方案二：</p>
+
+    <ul>
+      <li>消費者請求退換票之時限為購買票券後3日內(不含購票日)，購買票券後第4日起不接受退換票申請，請求退換票日期以郵戳寄送日為準，退票需酌收票面金額5%手續費，範例如下：
+      </li>
+      <li>退票方式及退款時間請詳閱YOYOTIX退換票規定</li>
+    </ul>
+
+    <h5>Ticket Return Policy (English)</h5>
+    <p>
+      According to the second ticket return plan of Laws & Regulations of “Ministry of Culture”, tickets are refundable with 5% return handling fee for three days ONLY after you purchase them. For example:
+    </p>
+    <ul>
+      <li>Tickets purchased on 2020/9/13 must be mailed to YOYOTIX before 2020/9/16. Tickets mailed out on and after 2020/9/17 for refund will NOT be accepted.</li>
+      <li>Tickets purchased on 2020/9/16 must be mailed to YOYOTIX before 2020/9/21. Tickets mailed out on and after 2020/9/22 for refund will NOT be accepted.</li>
+    </ul>
+    <p>
+      In order to process your refund request, physical tickets must be mailed to YOYOTIX before the due date. For YOYOTIX address, please refer to YOYOTIX REFUND POLICY.
+    </p>
+    <p><strong>NOTE:</strong> If you choose Family Mart as ticket collect method, you will still need to pick up your ticket at Family Mart and send it to YOYOTIX.</p>
+
+    <h5>重要提醒</h5>
+    <p>
+      請勿於拍賣網站或是其他非YOYOTIX正式授權售票之通路、網站購票，除可能衍生詐騙案件或交易糾紛外，以免影響自身權益，若發生演出現場無法入場或是其他問題，主辦單位及YOYOTIX概不負責。
+    </p>
+    <p>
+      若有任何形式非供自用而加價轉售（無論加價名目為代購費、交通費、補貼等均包含在內）之情事經查屬實者，將依社會秩序維護法第64條第2款逕向警方檢舉。
+    </p>
+
+    <h5>入場規定</h5>
+    <ul>
+      <li>一人一票排隊入場。</li>
+      <li>進場前請準備好票券及含照片之有效身分證件擇一，包括：身分證、健保卡、駕照或護照，其他地區人士請提供護照，至入口處時出示給入口處工作人員進行實名驗證，以便入場快速驗查。</li>
+      <li>未攜帶上述指定證件/資料不符不得入場，票券視同有價證券，請妥善保存，如發生遺失、破損、燒毀或無法辨識等狀況，恕不補發。</li>
+      <li>如遇票券毀損、滅失或遺失，主辦單位將依「藝文表演票券定型化契約應記載及不得記載事項」第七項「票券毀損、滅失及遺失之入場機制」之規定辦理，詳情請洽YOYOTIX客服中心。</li>
+    </ul>
+
+    <h3>禁止事項</h3>
+    <ul>
+      <li>未經主辦單位同意，本場活動禁止飲食、錄音、錄影、拍照、直播，請勿攜帶各類照相與攝影設備如：相機、攝影機、DV、錄音機入場。</li>
+      <li>螢光棒、LED燈牌、閃光頭飾等會發光及有聲響的應援物禁止攜帶入場，手機燈也請勿打開，購票前請務必三思確認自己可以配合再買票。</li>
+      <li>本節目禁止攜帶外食、飲料、任何種類之金屬、玻璃、寶特瓶容器、雷射筆、煙火或任何危險物品。</li>
+    </ul>
+
+    <h5>其他規定</h5>
+    <ul>
+      <li>各表演場館各有其入場規定，請持票人遵守，遲到觀眾需遵守館方管制。</li>
+      <li>消費者必須以真實姓名購票及填寫有效個人資訊，一旦以虛假資料購買票券已涉及「偽造私文書罪」，依刑法第二百十條：「偽造、變造私文書，足以生損害於公眾或他人者，處五年以下有期徒刑。」</li>
+      <li>主辦單位及YOYOTIX有權立即取消該消費者訂單，請勿以身試法！</li>
+      <li>主辦單位保留節目資訊更動權及活動最終解釋權。</li>
+      <li>購票前請詳閱注意事項，一旦購票成功視為同意上述所有活動注意事項。</li>
+    </ul>
+
+  </section>
+
+  <section id="register" class="mb-5">
+    <h3>活動票券</h3>
+      <table class="table mb-4">
+          <thead class="table-light">
+            <tr>
+              <th style="color: #5B5B5B;">票種</th>
+              <th style="color: #5B5B5B;" width="700">販售時間</th>
+              <th class="text-end" style="color: #5B5B5B;">售價</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ticket in tickets %}
+              <tr>
+                <td>{{ ticket.name }}</td>
+                <td width="700">
+                  {{ ticket.start_time }}(+0800) ~ {{ event.event_date }}(+0800)
+                  {% if ticket.start_time > now %}
+                    <span class="text-danger">尚未開賣</span>
+                  {% endif %}
+                </td>
+
+                <td class="text-end" style="color: #81c8e2">${{ ticket.price }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    <div align="center">
+    <a href="{% url 'event_registration' evid=event.id %}" class="btn btn-success btn-lg btn-register" >下一步</a>
+    </div>
+  </section>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.event-navbar');
+    const navbarHeight = navbar ? navbar.offsetHeight : 56;
+    const navLinks = document.querySelectorAll('.event-navbar a');
+    const sections = [...navLinks]
+      .map(link => document.querySelector(link.getAttribute('href')))
+      .filter(section => section !== null);
+
+    function onScroll() {
+      const scrollPos = window.scrollY + navbarHeight + 10;
+      let currentIndex = -1;
+      for (let i = 0; i < sections.length; i++) {
+        if (scrollPos >= sections[i].offsetTop) {
+          currentIndex = i;
+        }
+      }
+      navLinks.forEach(link => link.classList.remove('active'));
+      if (currentIndex !== -1) {
+        navLinks[currentIndex].classList.add('active');
+      }
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetSelector = this.getAttribute('href');
+        const target = document.querySelector(targetSelector);
+        if (!target) return;
+
+        const rect = target.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetPosition = rect.top + scrollTop - navbarHeight;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+  });
+</script>
+{% endblock %}

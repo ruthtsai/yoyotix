@@ -1,0 +1,230 @@
+<!-- tickets/order_detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <!-- 完成訊息 -->
+
+  {% if order.status == 'pending' %}
+    <div class="alert alert-warning">
+      <h4 class="alert-heading">訂單尚未結帳</h4>
+      <p>請於下單後15分鐘內結帳，超時訂單將自動取消</p>
+      <span id="countdown" class="fw-bold text-danger"></span>
+    </div>
+  {% elif order.status == 'cancelled' %}
+    <div class="alert alert-info">
+      <h4 class="alert-heading">訂單已取消</h4>
+    </div>
+  {% else %}
+    <div class="alert alert-success">
+      <h4 class="alert-heading">恭喜！您已完成訂單</h4>
+      <p>建議將活動加入行事曆，以免錯過精采活動喔！</p>
+    </div>
+  {% endif %}
+
+  <!-- 活動資訊表格 -->
+  <table class="table table-borderless mb-4" style="max-width:700px;">
+    <tbody>
+      <tr>
+        <th scope="row" style="width:130px;">活動名稱</th>
+        <td>
+          【{{ event.event_date|date:"m/d"}}】{{ event.title }}  
+          <a href="{% url 'event_detail' event.id %}">活動頁面</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">開始時間</th>
+        <td>{{ event.event_date}} (+0800)</td>
+      </tr>
+      <tr>
+        <th scope="row">活動地點</th>
+        <td>{{ event.location }}</td>
+      </tr>
+      <tr>
+        <th scope="row">訂單編號</th>
+        <td>#{{ order.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 訂單完成時間（如果有） -->
+  {% if order.status == 'collected' %}
+  <div class=" container mb-4">
+    <strong>-完成取票時間：</strong> {{ order.updated_at|date:"Y/m/d H:i" }} (+0800)
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <!-- 聯絡人資料卡片 -->
+    <div class="col-md-12 mb-12">
+      <div class="card h-100 d-flex flex-row">
+        <!-- 左側 icon -->
+        <div class="d-flex align-items-center justify-content-center" style="width: 80px; background-color: #28a745;">
+          <span class="material-symbols-outlined fs-1 text-white">
+            person
+          </span>
+        </div>
+
+
+        <!-- 右側資料 -->
+        <div class="card-body">
+          <h5 class="card-title">聯絡人資料</h5>
+          <dl class="row mb-0">
+            <dt class="col-sm-4">姓名</dt>
+            <dd class="col-sm-8">{{ order.user.get_full_name|default:order.user.username }}</dd>
+
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">{{ order.user.email }}</dd>
+
+            <dt class="col-sm-4">手機</dt>
+            <dd class="col-sm-8">
+              {% if order.user.phone %}
+                {{ order.user.phone }}
+              {% else %}
+                無資料
+              {% endif %}
+            </dd>
+          </dl>
+          <p class="mt-2 text-muted">報名資料已無法修改，如有相關問題請參閱活動頁面。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div>
+      <br>
+    </div> -->
+    <!-- 票券資訊卡片 -->
+    <div class="col-md-12 mb-12">
+      <div class="card h-100 d-flex flex-row">
+        <!-- 左側 icon -->
+        <div class="d-flex align-items-center justify-content-center" style="width: 80px; background-color: #28a745;">
+          <span class="material-symbols-outlined fs-1 text-white">
+            local_activity
+          </span>
+        </div>
+
+        <!-- 右側資料 -->
+        <div class="card-body">
+          <h5 class="card-title">票券資訊</h5>
+          <p class="mb-1"><strong>{{ order.ticket.name }}</strong></p>
+          <p class="mb-1"><strong>活動名稱：</strong>【{{ event.event_date|date:"m/d" }}】{{ event.title }}</p>
+          <p class="mb-1"><strong>票券狀態：</strong>
+            {% if order.status == 'pending' %}
+              未付款
+            {% elif order.status == 'paid' %}
+              已付款未取票
+            {% elif order.status == 'collected' %}
+              已取票
+            {% elif order.status == 'cancelled' %}
+              已取消
+            {% endif %}
+          </p>
+
+          <!-- 狀態對應按鈕 -->
+          {% if order.status == 'pending' %}
+            <a href="{% url 'event_checkout' order.id %}" class="btn btn-warning mt-2">前往付款</a>
+          {% elif order.status == 'paid' %}
+            <form method="post" action="">
+              {% csrf_token %}
+              <button type="submit" name="collect_ticket" class="btn btn-success mt-2">取票</button>
+            </form>
+          {% elif order.status == 'collected' %}
+            <p class="text-success mt-2">您已完成取票，請準時參加活動！</p>
+          {% endif %}
+
+          {% if order.status in 'paid' %}
+            <form method="post" action="" onsubmit="return confirmCancel();">
+              {% csrf_token %}
+              <button type="submit" name="cancel_order" class="btn btn-outline-danger mt-2" style="background-color: #af7838; color: white;">退票</button>
+            </form>
+          {% endif %}
+
+
+          {% if order.status == 'collected' and qr_codes %}
+            <div class="row">
+              {% for qr in qr_codes %}
+                <div class="col-md-4 text-center mb-4">
+                  <h6 class="text-secondary">票券 #{{ forloop.counter }}</h6>
+                  <img src="{{ qr.img_data }}" class="img-thumbnail" alt="QR Code">
+                  <!-- <p class="text-muted small mt-2">票碼：{{ qr.code }}</p> -->
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="alert alert-info mt-3">
+              若購買多張票券，請為每位參加者個別出示對應 QR Code。
+            </div>
+          {% endif %}
+
+          <h6 class="mt-3">注意事項</h6>
+          <ul class="mb-2">
+            <li>退票與演出入場規範請見售票頁</li>
+            <li>禁止錄音錄影、身高110cm以下不得進入三樓</li>
+            <li>主辦保留最終解釋權</li>
+          </ul>
+
+          <p class="mb-0">主辦單位：{{ event.organizer }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let remainingSeconds = {{ remaining_seconds }};
+    const countdownEl = document.getElementById("countdown");
+
+    function formatTime(seconds) {
+      const min = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const sec = (seconds % 60).toString().padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function updateCountdown() {
+      if (remainingSeconds <= 0) {
+        countdownEl.textContent = "訂單已逾時，請重新下單";
+        countdownEl.classList.remove("text-danger");
+        countdownEl.classList.add("text-muted");
+        return;
+      }
+
+      countdownEl.textContent = "剩餘時間：" + formatTime(remainingSeconds);
+      remainingSeconds--;
+      setTimeout(updateCountdown, 1000);
+    }
+
+    updateCountdown();
+  });
+
+
+  // 退票相關
+  function confirmCancel() {
+    return confirm("確定要退票嗎？此操作無法復原。");
+  }
+   // 顯示 SweetAlert 彈窗訊息
+  document.addEventListener("DOMContentLoaded", function () {
+     {% if messages %}
+       {% for message in messages %}
+         {% if 'popup' in message.tags %}
+           Swal.fire({
+             icon: 'warning',
+             title: '票券已取消',
+             text: '{{ message|escapejs }}',
+             confirmButtonText: '確定'
+           });
+         {% endif %}
+       {% endfor %}
+     {% endif %}
+   });
+
+</script>
+{% endblock %}

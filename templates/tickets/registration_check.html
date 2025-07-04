@@ -1,0 +1,53 @@
+<!-- tickets/registration_check.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>確認購買資訊 - {{ event.title }}</h2>
+  <dl class="row">
+    <dt class="col-sm-3">票種名稱</dt>
+    <dd class="col-sm-9">{{ ticket.name }}</dd>
+
+    <dt class="col-sm-3">購買張數</dt>
+    <dd class="col-sm-9">{{ quantity }}</dd>
+
+    <dt class="col-sm-3">單張票價</dt>
+    <dd class="col-sm-9">${{ ticket.price }}</dd>
+
+    <dt class="col-sm-3">總價</dt>
+    <dd class="col-sm-9">${{ total_price }}</dd>
+
+    <dt class="col-sm-3">購買者</dt>
+    <dd class="col-sm-9">{{ user_info.username }} ({{ user_info.email }})</dd>
+  </dl>
+
+  <form method="post" id="confirm-form" novalidate>
+    {% csrf_token %}
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="confirmCheck" name="confirm" required>
+      <label class="form-check-label" for="confirmCheck">
+        我確認以上購買資訊無誤
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary">確認並前往結帳</button>
+    <a href="{% url 'event_registration' event.id %}" class="btn btn-secondary">返回修改</a>
+  </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("confirm-form");
+    const confirmCheck = document.getElementById("confirmCheck");
+
+    form.addEventListener("submit", function(event) {
+      if (!confirmCheck.checked) {
+        event.preventDefault();  // 阻止表單送出
+        alert("請確認購買資訊無誤！");
+      }
+    });
+  });
+</script>
+{% endblock %}
+

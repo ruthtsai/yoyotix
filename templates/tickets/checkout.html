@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>結帳頁面 - 訂單 #{{ order.id }}</h2>
+
+  <p><strong>活動：</strong> {{ order.ticket.event.title }}</p>
+  <p><strong>票種：</strong> {{ order.ticket.name }}</p>
+  <p><strong>張數：</strong> {{ order.quantity }}</p>
+  <p><strong>總價：</strong> ${{ total_price|floatformat:0 }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">請選擇付款方式：</label><br>
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card" required>
+        <label class="form-check-label" for="creditCard">信用卡刷卡</label>
+      </div>
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="payment_method" id="atmTransfer" value="atm" required>
+        <label class="form-check-label" for="atmTransfer">ATM 轉帳</label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">付款</button>
+  </form>
+</div>
+{% endblock %}

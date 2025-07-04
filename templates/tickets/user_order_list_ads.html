@@ -1,0 +1,105 @@
+<!-- tickets/user_order_list_ads.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<style>
+  .card-hover-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .card:hover .card-hover-box {
+    opacity: 1;
+  }
+
+  .card-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-img {
+    max-height: 500px;
+    object-fit: cover;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h3 class="mb-4">我的票券</h3>
+
+  {% if orders %}
+    <div class="list-group">
+      {% for order in orders %}
+        <a href="{% url 'order_detail' order.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <div>
+            <strong>【{{ order.ticket.event.event_date|date:"m/d" }}】{{ order.ticket.event.title }}</strong><br>
+            <small>票種：{{ order.ticket.name }}　數量：{{ order.quantity }} 張</small><br>
+            <small>狀態：
+              {% if order.status == 'pending' %}未付款
+              {% elif order.status == 'paid' %}已付款未取票
+              {% elif order.status == 'collected' %}已取票
+              {% elif order.status == 'cancelled' %}已取消
+              {% endif %}
+            </small>
+          </div>
+          <span class="badge bg-secondary">{{ order.created_at|date:"Y/m/d" }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">目前沒有訂單紀錄。</div>
+  {% endif %}
+
+
+  <h3 class="mb-4 mt-4">推薦活動</h3>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for event in recommend_events %}
+    <div class="col">
+      <div class="card h-100 shadow-sm card-wrapper">
+        <img src="{{ event.main_image.url }}" class="card-img-top" alt="{{ event.title }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ event.title }}</h5>
+          <p class="card-text">
+            <small class="text-muted">{{ event.event_date|date:"Y-m-d H:i" }}</small>
+          </p>
+          <div align="center">
+            <a href="{% url 'event_detail' event.id %}" class="btn btn-primary">前往活動頁面</a>
+          </div>
+        </div>
+        <div class="card-hover-box">
+          {{ event.description|truncatechars:100 }}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col">
+      <p>目前沒有推薦活動。</p>
+    </div>
+  {% endfor %}
+  </div>
+
+
+
+  <br>
+</div>
+
+{% endblock %}

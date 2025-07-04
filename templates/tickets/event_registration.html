@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <!-- 活動已結束 -->
+  {% if event.event_date < now %}
+    <div class="alert alert-info">
+      此活動已結束
+    </div>
+    <button class="btn btn-outline-secondary" onclick="history.back()">回到上一頁</button>
+
+  <!-- 尚未開賣 -->
+  {% elif not_yet_started %}
+    <div class="alert alert-warning">
+      尚未開賣
+    </div>
+    <button class="btn btn-outline-secondary" onclick="history.back()">回到上一頁</button>
+
+  <!-- 無可購票券 -->
+  {% elif all_sold_out %}
+    <div class="alert alert-warning">
+      目前無可購票券
+    </div>
+    <button class="btn btn-outline-secondary" onclick="history.back()">回到上一頁</button>
+
+  <!-- 活動正在販售票券 -->
+  {% else %}
+    <h2 class="mb-4">購買票券：{{ event.title }}</h2>
+
+    {% if messages %}
+      <div class="mb-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- 座位圖與表單區塊 -->
+    <div class="row">
+      {% if event.seating_map %}
+        <!-- 左邊：座位圖 -->
+        <div class="col-lg-6 mb-4">
+          <img src="{{ event.seating_map.url }}" alt="座位圖" class="img-fluid rounded shadow">
+        </div>
+
+        <!-- 右邊：票價資訊與表單 -->
+        <div class="col-lg-6">
+      {% else %}
+        <!-- 無座位圖，表單置中 -->
+        <div class="col-lg-6 offset-lg-3">
+      {% endif %}
+      
+          <table class="table table-bordered mb-4">
+            <thead class="table-light">
+              <tr>
+                <th>票種</th>
+                <th>價格</th>
+                <th>剩餘張數</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ticket in tickets %}
+                <tr>
+                  <td>{{ ticket.name }}</td>
+                  <td>${{ ticket.price }}</td>
+                  {% if ticket.start_time and ticket.start_time > now %}
+                    <td><span style="color:#81c8e2">尚未開賣</span></td>
+                  {% elif ticket.remaining == 0 %}
+                    <td><span class="text-danger">已售完</span></td>
+                  {% else %}
+                    <td>{{ ticket.remaining }}</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <!-- 購票表單 -->
+          <form method="post" id="ticket-form" novalidate>
+            {% csrf_token %}
+
+            {% if form.ticket_id %}
+              <div class="mb-3">
+                <label class="form-label">請選擇票種：</label>
+                {{ form.ticket_id }}
+              </div>
+
+              <div class="mb-3">
+                <label for="{{ form.quantity.id_for_label }}" class="form-label">購買張數：</label>
+                {{ form.quantity }}
+                <div id="ticket-warning" class="form-text text-danger" style="display: none;"></div>
+              </div>
+
+              <div class="mb-3 form-check">
+                {{ form.agree }}
+                <label class="form-check-label" for="{{ form.agree.id_for_label }}">
+                  我已經閱讀並同意 
+                  <a href="https://kktix.com/terms" target="_blank">服務條款</a> 與 
+                  <a href="https://kktix.com/policy" target="_blank">隱私權政策</a>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-success" id="submit-btn">下一步：確認資訊</button>
+
+            {% else %}
+              <p>目前無可購票券</p>
+            {% endif %}
+          </form>
+
+          <br>
+        </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("ticket-form");
+    const agreeCheckbox = document.getElementById("id_agree");
+    const quantityInput = document.getElementById("id_quantity");
+    const ticketRadios = document.querySelectorAll('input[name="ticket_id"]');
+
+    form.addEventListener("submit", function(event) {
+      let ticketSelected = false;
+      ticketRadios.forEach(function(radio) {
+        if (radio.checked) ticketSelected = true;
+      });
+      if (!ticketSelected) {
+        event.preventDefault();
+        alert("請選擇票種。");
+        return;
+      }
+
+      if (!agreeCheckbox.checked) {
+        event.preventDefault();
+        alert("請先勾選同意條款與隱私權政策。");
+        return;
+      }
+
+      const quantity = parseInt(quantityInput.value, 10);
+      if (!isNaN(quantity) && quantity > 4) {
+        event.preventDefault();
+        alert("一次最多只能購買 4 張票，請重新輸入。");
+        return;
+      }
+    });
+  });
+</script>
+{% endblock %}

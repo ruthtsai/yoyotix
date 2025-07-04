@@ -1,0 +1,32 @@
+<!-- templates/includes/footer.html -->
+{% load static %}
+<!-- mt-auto 是關鍵：讓 footer 被推到底部。 -->
+<footer class="bg-dark text-white py-4 mt-auto">
+  <div class="row">
+    <!--左-->
+    <div class="col-xs-12 col-md-4">
+      <div class="container" align="right">
+        <img src="{% static 'image/YOYOTIX_text_white.png'%}" width="140">
+      </div>
+    </div>
+
+    <!--右-->
+    <div class="col-xs-8 col-md-6">
+      <div class="container text-left">
+        <p class="mb-1">聯絡我們：94ruthtsai@gmail.com</p>
+        <p class="mb-1">客服時間：我醒著的時候</p>
+        <p class="mb-0">&copy; 2025 YOYOTIX All Rights Reserved.</p>
+      </div>
+    </div>
+    <!-- IG icon 區塊 -->
+    <div class="col-xs-4 col-md-2">
+      <div class="container text-center">
+        <a href="https://www.instagram.com/yoyo_tsai/" target="_blank" class="text-white">
+          <i class="bi bi-instagram" style="font-size: 1.8rem;"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+

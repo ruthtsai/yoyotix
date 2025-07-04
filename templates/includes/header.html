@@ -1,0 +1,103 @@
+<!-- templates/includes/header.html -->
+{% load static %}
+<header>
+<style>
+  @keyframes navbarGradientIn {
+    0% {
+      background: linear-gradient(to right, #64c025, #356f2b);
+      background-size: 200% auto;
+      background-position: 100% 0;
+    }
+    100% {
+      background: linear-gradient(to right, #64c025, #64c025); 
+      background-position: 0 0;
+    }
+  }
+
+  .navbar-animated {
+    background: linear-gradient(to right, #64c025, #356f2b); /* 初始值 */
+    animation: navbarGradientIn 1.8s ease-out forwards;
+  }
+</style>
+
+  <nav class="navbar navbar-expand-lg navbar-animated" style="background-color: #64c025;">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'image/YOYOTIX_text_white_big.png' %}" height="30" alt="YOYOTIX Logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="切換導航">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/events">探索活動</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'strategy' %}">購票流程</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'message_list' %}">常見問題</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'user_order_list_ads' %}">我的票券</a></li>
+        {% endif %}
+        {% if user.is_superuser %}
+          <li class="nav-item"><a class="nav-link text-danger" href="/admin/">管理展演</a></li>
+          <li class="nav-item"><a class="nav-link text-danger" href="/admin/tickets/order/">管理訂單</a></li>
+          
+        {% endif %}
+      </ul>
+
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">{{ user.nickname|default:user.username }}</a>
+          <!-- <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="/user/profile">設定</a></li>
+            <li><a class="dropdown-item" href="{% url 'user_order_list' %}">訂單</a></li>
+            <li><a class="dropdown-item" href="{% url 'contact_form' %}">聯絡客服中心</a></li>
+
+            
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                <button type="submit" class="dropdown-item">登出</button>
+              </form>
+            </li>
+          </ul> -->
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li>
+              <a class="dropdown-item" href="/user/profile">
+                <span class="material-symbols-outlined align-middle me-2">settings</span>設定
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'user_order_list' %}">
+                <span class="material-symbols-outlined align-middle me-2">confirmation_number</span>訂單
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'contact_form' %}">
+                <span class="material-symbols-outlined align-middle me-2">support_agent</span>聯絡客服中心
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+              <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                <button type="submit" class="dropdown-item">
+                  <span class="material-symbols-outlined align-middle me-2">logout</span>登出
+                </button>
+              </form>
+            </li>
+          </ul>
+
+        </li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="/user/register">註冊</a></li>
+        <li class="nav-item"><a class="nav-link" href="/user/login">登入</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+</header>

@@ -1,0 +1,110 @@
+<!-- index.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .card-hover-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .card:hover .card-hover-box {
+    opacity: 1;
+  }
+
+  .card-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-img {
+    max-height: 500px;
+    object-fit: cover;
+  }
+
+</style>
+
+<!-- 輪播區塊 -->
+<div id="carousel-events" class="carousel slide mb-5" data-bs-ride="carousel">
+  <!-- 指示點 -->
+  <div class="carousel-indicators">
+    {% for event in events %}
+      <button type="button" data-bs-target="#carousel-events" data-bs-slide-to="{{ forloop.counter0 }}"
+        class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+    {% endfor %}
+  </div>
+
+  <!-- 圖片輪播內容 -->
+  <div class="carousel-inner ">
+    {% for event in events %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}" align="center">
+        <img src="{{ event.main_image.url }}" class="d-block h-70 carousel-img" alt="{{ event.title }}">
+        <div class="container">
+          <h4 class="text-muted">{{ event.title }}</h4>
+        </div>
+        <br>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- 左右控制箭頭 -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carousel-events" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">上一張</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carousel-events" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">下一張</span>
+  </button>
+</div>
+
+<!-- 活動卡片區塊 -->
+<div class="container mt-4">
+  <h2 class="mb-4">演出活動</h2>
+  <hr>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for event in events %}
+      <div class="col">
+        <div class="card h-100 shadow-sm card-wrapper">
+          <img src="{{ event.main_image.url }}" class="card-img-top" alt="{{ event.title }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ event.title }}</h5>
+            <p class="card-text">
+              <small class="text-muted">{{ event.event_date|date:"Y-m-d H:i" }}</small>
+            </p>
+            <div align="center">
+              <a href="{% url 'event_detail' event.id %}" class="btn btn-primary">前往活動頁面</a>
+            </div>
+          </div>
+          <div class="card-hover-box">
+            {{ event.description|truncatechars:100 }}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col">
+        <p>目前沒有活動。</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<br>
+{% endblock %}
