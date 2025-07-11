@@ -91,7 +91,6 @@ yoyotix/
 - 動態 QR Code 生成（待整合）
 
 ## 開發環境安裝
-Python 3.6.9
 
 ```bash
 # 建立虛擬環境
