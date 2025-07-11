@@ -4,7 +4,6 @@ django-markdown-deux==1.0.6
 django-ranged-response==0.2.0
 django-simple-captcha==0.5.20
 markdown2==2.4.13
-mysqlclient==2.1.1
 Pillow==8.4.0
 pytz==2025.1
 qrcode==7.3.1
