@@ -1,6 +1,5 @@
 __pycache__/
 *.pyc
-*.sqlite3
 *.log
 venv/
 VENV/
